@@ -5,6 +5,7 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container } from './styles';
 import Input from '../../components/shared/Input';
 import NavButton from '../../components/shared/NavButton';
@@ -37,6 +38,7 @@ const Beers: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const [beers, setBeers] = useState<IBeer[]>([]);
   const [findBeer, setFindBeer] = useState('');
+  const { t } = useTranslation();
 
   const likedBeers: IBeer[] = [];
 
@@ -84,31 +86,31 @@ const Beers: React.FC = () => {
 
   const navMenu: INavMenu[] = [
     {
-      title: 'Listar Todas',
+      title: 'list_all',
       func: listAll,
     },
     {
-      title: 'Mais Escuras',
+      title: 'darker',
       func: listByGreaterEBC,
     },
     {
-      title: 'Mais Claras',
+      title: 'clearer',
       func: listByLessEBC,
     },
     {
-      title: 'Amargas',
+      title: 'bitter',
       func: listByGreaterIBU,
     },
     {
-      title: 'Suaves',
+      title: 'smooth',
       func: listByLessIBU,
     },
     {
-      title: 'Teor Alcolico Alto',
+      title: 'high_alcohol_content',
       func: listByGreaterABV,
     },
     {
-      title: 'Teor Alcolico Baixo',
+      title: 'low_alcohol_content',
       func: listByLessABV,
     },
   ];
@@ -147,14 +149,15 @@ const Beers: React.FC = () => {
 
   return (
     <Container>
-      <Header title="PUNK API">
+      <p />
+      <Header title={t('punk_api')}>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input
             value={findBeer}
             onChange={e => setFindBeer(e.target.value)}
             name="beerName"
             type="text"
-            placeholder="Buscar por nome"
+            placeholder={t('find_by_name')}
           />
 
           <SearchButton />
@@ -165,16 +168,16 @@ const Beers: React.FC = () => {
         <NavBar>
           <Link to="/">
             <FiChevronLeft size={20} />
-            Voltar
+            {t('back')}
           </Link>
 
           {navMenu.map(menu => (
             <NavButton key={menu.title} onClick={() => menu.func()}>
-              {menu.title}
+              {t(menu.title)}
             </NavButton>
           ))}
 
-          <Link to="/liked-beers">Meus Favoritos</Link>
+          <Link to="/liked-beers">{t('my_favorites')}</Link>
         </NavBar>
 
         <Arcicle>
