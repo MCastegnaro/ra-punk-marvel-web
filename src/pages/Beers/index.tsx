@@ -11,12 +11,13 @@ import Input from '../../components/shared/Input';
 import NavButton from '../../components/shared/NavButton';
 import beersApi from '../../services/beersApi';
 import Beer from '../../components/Beer';
-import BeerInfo from '../../components/BeerInfo';
+import BeerInfo from '../../components/Beer/BeerInfo';
 import Header from '../../components/shared/Header';
 import Section from '../../components/shared/Section';
 import NavBar from '../../components/shared/NavBar';
 import Arcicle from '../../components/shared/Arcicle';
 import SearchButton from '../../components/shared/SearchButton';
+import { useToast } from '../../hooks/toast';
 
 interface IBeer {
   id: number;
@@ -39,6 +40,7 @@ const Beers: React.FC = () => {
   const [beers, setBeers] = useState<IBeer[]>([]);
   const [findBeer, setFindBeer] = useState('');
   const { t } = useTranslation();
+  const { addToast } = useToast();
 
   const likedBeers: IBeer[] = [];
 
@@ -138,6 +140,12 @@ const Beers: React.FC = () => {
       findIndexBeer >= 0
         ? likedBeers.splice(findIndexBeer, 1)
         : likedBeers.push(beer);
+
+      addToast({
+        type: 'error',
+        title: 'Erro na autenticação',
+        description: 'Ocorreu um erro ao fazer login, cheque as credenciais',
+      });
 
       localStorage.setItem(
         '@RAchallenge:beersliked',
