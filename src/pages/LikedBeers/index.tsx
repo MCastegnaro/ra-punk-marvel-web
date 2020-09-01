@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FiChevronLeft } from 'react-icons/fi';
 import { Link, RouteChildrenProps } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container } from './styles';
 import Arcicle from '../../components/shared/Arcicle';
 import Beer from '../../components/Beer';
@@ -21,7 +22,8 @@ interface IBeer {
 }
 
 const LikedBeers: React.FC<RouteChildrenProps> = () => {
-  const [data, setData] = useState<IBeer[]>(() => {
+  const { t } = useTranslation();
+  const [data] = useState<IBeer[]>(() => {
     const beers = localStorage.getItem('@RAchallenge:beersliked');
 
     if (beers) {
@@ -34,13 +36,13 @@ const LikedBeers: React.FC<RouteChildrenProps> = () => {
 
   return (
     <Container>
-      <Header title="CERVEJAS FAVORITAS" />
+      <Header title={t('favorite_beers')} />
 
       <Section>
         <NavBar>
           <Link to="/beers">
             <FiChevronLeft size={20} />
-            Voltar
+            {t('back')}
           </Link>
         </NavBar>
 
