@@ -9,7 +9,15 @@ import { useTranslation } from 'react-i18next';
 import { Container } from './styles';
 import Input from '../../components/shared/Input';
 import NavButton from '../../components/shared/NavButton';
-import beersApi from '../../services/beersApi';
+import api, {
+  listByGreaterEBC,
+  listAll,
+  listByLessEBC,
+  listByGreaterIBU,
+  listByLessIBU,
+  listByGreaterABV,
+  listByLessABV,
+} from '../../services/punk/api';
 import Beer from '../../components/Beer';
 import BeerInfo from '../../components/Beer/BeerInfo';
 import Header from '../../components/shared/Header';
@@ -36,13 +44,13 @@ interface INavMenu {
 }
 
 const Beers: React.FC = () => {
+  const TOKEN_BEERSLIKED = '@RAchallenge:beersliked';
   const formRef = useRef<FormHandles>(null);
-  const [beers, setBeers] = useState<IBeer[]>([]);
-  const [findBeer, setFindBeer] = useState('');
   const { t } = useTranslation();
   const { addToast } = useToast();
-  const TOKEN_BEERSLIKED = '@RAchallenge:beersliked';
 
+  const [beers, setBeers] = useState<IBeer[]>([]);
+  const [findBeer, setFindBeer] = useState('');
   const [likedBeers] = useState<IBeer[]>(() => {
     const getLikedBeers = localStorage.getItem(TOKEN_BEERSLIKED);
 
@@ -53,84 +61,72 @@ const Beers: React.FC = () => {
     return [] as IBeer[];
   });
 
-  const listAll = useCallback(async () => {
-    await beersApi.get(`beers`).then(response => {
-      setBeers(response.data);
-    });
+  const list = useCallback(async () => {
+    await listAll().then(res => setBeers(res as IBeer[]));
   }, []);
 
-  const listByGreaterEBC = useCallback(async () => {
-    await beersApi.get(`beers?ebc_gt=20`).then(response => {
-      setBeers(response.data);
-    });
-  }, []);
-  const listByLessEBC = useCallback(async () => {
-    await beersApi.get(`beers?ebc_lt=20`).then(response => {
-      setBeers(response.data);
-    });
-  }, []);
-  const listByGreaterIBU = useCallback(async () => {
-    await beersApi.get(`beers?ibu_gt=40`).then(response => {
-      setBeers(response.data);
-    });
-  }, []);
-  const listByLessIBU = useCallback(async () => {
-    await beersApi.get(`beers?ibu_lt=40`).then(response => {
-      setBeers(response.data);
-    });
+  const greaterEBC = useCallback(async () => {
+    await listByGreaterEBC().then(res => setBeers(res as IBeer[]));
   }, []);
 
-  const listByGreaterABV = useCallback(async () => {
-    await beersApi.get(`beers?abv_gt=4`).then(response => {
-      setBeers(response.data);
-    });
+  const lessEBC = useCallback(async () => {
+    await listByLessEBC().then(res => setBeers(res as IBeer[]));
   }, []);
-  const listByLessABV = useCallback(async () => {
-    await beersApi.get(`beers?abv_lt=4`).then(response => {
-      setBeers(response.data);
-    });
+
+  const greaterIBU = useCallback(async () => {
+    await listByGreaterIBU().then(res => setBeers(res as IBeer[]));
+  }, []);
+
+  const lessIBU = useCallback(async () => {
+    await listByLessIBU().then(res => setBeers(res as IBeer[]));
+  }, []);
+
+  const greaterABV = useCallback(async () => {
+    await listByGreaterABV().then(res => setBeers(res as IBeer[]));
+  }, []);
+
+  const lessABV = useCallback(async () => {
+    await listByLessABV().then(res => setBeers(res as IBeer[]));
   }, []);
 
   useEffect(() => {
-    listAll();
-  }, [listAll]);
+    list();
+  }, [list]);
 
   const navMenu: INavMenu[] = [
     {
       title: 'list_all',
-      func: listAll,
+      func: list,
     },
     {
       title: 'darker',
-      func: listByGreaterEBC,
+      func: greaterEBC,
     },
     {
       title: 'clearer',
-      func: listByLessEBC,
+      func: lessEBC,
     },
     {
       title: 'bitter',
-      func: listByGreaterIBU,
+      func: greaterIBU,
     },
     {
       title: 'smooth',
-      func: listByLessIBU,
+      func: lessIBU,
     },
     {
       title: 'high_alcohol_content',
-      func: listByGreaterABV,
+      func: greaterABV,
     },
     {
       title: 'low_alcohol_content',
-      func: listByLessABV,
+      func: lessABV,
     },
   ];
 
   const handleSubmit = useCallback(async () => {
     try {
-      const response = await beersApi.get<IBeer[]>(
-        `beers?beer_name=${findBeer}`,
-      );
+      const response = await api.get<IBeer[]>(`beers?beer_name=${findBeer}`);
       const beer = response.data as IBeer[];
 
       setBeers(beer);
