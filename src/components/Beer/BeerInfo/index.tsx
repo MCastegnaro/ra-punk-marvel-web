@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Container } from './styles';
 
 interface IBeerInfoProps {
@@ -8,18 +9,19 @@ interface IBeerInfoProps {
 }
 
 const InfoBeer: React.FC<IBeerInfoProps> = ({ ibu, ebc, abv }) => {
+  const { t } = useTranslation();
   return (
     <Container>
       <p>
-        Cor:
+        {t('color')}
         {ebc}
       </p>
       <p>
-        Amargura:
+        {t('bitterness')}
         {ibu}
       </p>
       <p>
-        Teor:
+        {t('alcohol_content')}
         {abv}
       </p>
     </Container>

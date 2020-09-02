@@ -5,17 +5,27 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container } from './styles';
 import Input from '../../components/shared/Input';
 import NavButton from '../../components/shared/NavButton';
-import beersApi from '../../services/beersApi';
+import api, {
+  listByGreaterEBC,
+  listAll,
+  listByLessEBC,
+  listByGreaterIBU,
+  listByLessIBU,
+  listByGreaterABV,
+  listByLessABV,
+} from '../../services/punk/api';
 import Beer from '../../components/Beer';
-import BeerInfo from '../../components/BeerInfo';
+import BeerInfo from '../../components/Beer/BeerInfo';
 import Header from '../../components/shared/Header';
 import Section from '../../components/shared/Section';
 import NavBar from '../../components/shared/NavBar';
 import Arcicle from '../../components/shared/Arcicle';
 import SearchButton from '../../components/shared/SearchButton';
+import { useToast } from '../../hooks/toast';
 
 interface IBeer {
   id: number;
@@ -34,98 +44,101 @@ interface INavMenu {
 }
 
 const Beers: React.FC = () => {
+  const TOKEN_BEERSLIKED = '@RAchallenge:beersliked';
   const formRef = useRef<FormHandles>(null);
+  const { t } = useTranslation();
+  const { addToast } = useToast();
+
   const [beers, setBeers] = useState<IBeer[]>([]);
   const [findBeer, setFindBeer] = useState('');
+  const [likedBeers] = useState<IBeer[]>(() => {
+    const getLikedBeers = localStorage.getItem(TOKEN_BEERSLIKED);
 
-  const likedBeers: IBeer[] = [];
+    if (getLikedBeers) {
+      return JSON.parse(getLikedBeers) as IBeer[];
+    }
 
-  const listAll = useCallback(async () => {
-    await beersApi.get(`beers`).then(response => {
-      setBeers(response.data);
-    });
-  }, []);
+    return [] as IBeer[];
+  });
 
-  const listByGreaterEBC = useCallback(async () => {
-    await beersApi.get(`beers?ebc_gt=20`).then(response => {
-      setBeers(response.data);
-    });
-  }, []);
-  const listByLessEBC = useCallback(async () => {
-    await beersApi.get(`beers?ebc_lt=20`).then(response => {
-      setBeers(response.data);
-    });
-  }, []);
-  const listByGreaterIBU = useCallback(async () => {
-    await beersApi.get(`beers?ibu_gt=40`).then(response => {
-      setBeers(response.data);
-    });
-  }, []);
-  const listByLessIBU = useCallback(async () => {
-    await beersApi.get(`beers?ibu_lt=40`).then(response => {
-      setBeers(response.data);
-    });
+  const list = useCallback(async () => {
+    await listAll().then(res => setBeers(res as IBeer[]));
   }, []);
 
-  const listByGreaterABV = useCallback(async () => {
-    await beersApi.get(`beers?abv_gt=4`).then(response => {
-      setBeers(response.data);
-    });
+  const greaterEBC = useCallback(async () => {
+    await listByGreaterEBC().then(res => setBeers(res as IBeer[]));
   }, []);
-  const listByLessABV = useCallback(async () => {
-    await beersApi.get(`beers?abv_lt=4`).then(response => {
-      setBeers(response.data);
-    });
+
+  const lessEBC = useCallback(async () => {
+    await listByLessEBC().then(res => setBeers(res as IBeer[]));
+  }, []);
+
+  const greaterIBU = useCallback(async () => {
+    await listByGreaterIBU().then(res => setBeers(res as IBeer[]));
+  }, []);
+
+  const lessIBU = useCallback(async () => {
+    await listByLessIBU().then(res => setBeers(res as IBeer[]));
+  }, []);
+
+  const greaterABV = useCallback(async () => {
+    await listByGreaterABV().then(res => setBeers(res as IBeer[]));
+  }, []);
+
+  const lessABV = useCallback(async () => {
+    await listByLessABV().then(res => setBeers(res as IBeer[]));
   }, []);
 
   useEffect(() => {
-    listAll();
-  }, [listAll]);
+    list();
+  }, [list]);
 
   const navMenu: INavMenu[] = [
     {
-      title: 'Listar Todas',
-      func: listAll,
+      title: 'list_all',
+      func: list,
     },
     {
-      title: 'Mais Escuras',
-      func: listByGreaterEBC,
+      title: 'darker',
+      func: greaterEBC,
     },
     {
-      title: 'Mais Claras',
-      func: listByLessEBC,
+      title: 'clearer',
+      func: lessEBC,
     },
     {
-      title: 'Amargas',
-      func: listByGreaterIBU,
+      title: 'bitter',
+      func: greaterIBU,
     },
     {
-      title: 'Suaves',
-      func: listByLessIBU,
+      title: 'smooth',
+      func: lessIBU,
     },
     {
-      title: 'Teor Alcolico Alto',
-      func: listByGreaterABV,
+      title: 'high_alcohol_content',
+      func: greaterABV,
     },
     {
-      title: 'Teor Alcolico Baixo',
-      func: listByLessABV,
+      title: 'low_alcohol_content',
+      func: lessABV,
     },
   ];
 
   const handleSubmit = useCallback(async () => {
     try {
-      const response = await beersApi.get<IBeer[]>(
-        `beers?beer_name=${findBeer}`,
-      );
+      const response = await api.get<IBeer[]>(`beers?beer_name=${findBeer}`);
       const beer = response.data as IBeer[];
 
       setBeers(beer);
       setFindBeer('');
     } catch (error) {
-      console.log(error);
+      addToast({
+        type: 'error',
+        title: t('error_find_beer'),
+        description: t('error_not_find_beer_desc'),
+      });
     }
-  }, [findBeer]);
+  }, [addToast, findBeer, t]);
 
   const handleGiveLike = useCallback(
     async (beer: IBeer) => {
@@ -133,28 +146,39 @@ const Beers: React.FC = () => {
         indexBeer => indexBeer.id === beer.id,
       );
 
-      findIndexBeer >= 0
-        ? likedBeers.splice(findIndexBeer, 1)
-        : likedBeers.push(beer);
+      if (findIndexBeer >= 0) {
+        likedBeers.splice(findIndexBeer, 1);
+        addToast({
+          type: 'info',
+          title: t('item_removed'),
+          description: t('item_removed_desc'),
+        });
+      } else {
+        likedBeers.push(beer);
+        addToast({
+          type: 'success',
+          title: t('item_added'),
+          description: t('item_added_desc'),
+        });
+      }
 
-      localStorage.setItem(
-        '@RAchallenge:beersliked',
-        JSON.stringify(likedBeers),
-      );
+      localStorage.setItem(TOKEN_BEERSLIKED, JSON.stringify(likedBeers));
     },
-    [likedBeers],
+
+    [addToast, likedBeers, t],
   );
 
   return (
     <Container>
-      <Header title="PUNK API">
+      <p />
+      <Header title={t('punk_api')}>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input
             value={findBeer}
             onChange={e => setFindBeer(e.target.value)}
             name="beerName"
             type="text"
-            placeholder="Buscar por nome"
+            placeholder={t('find_by_name')}
           />
 
           <SearchButton />
@@ -165,16 +189,16 @@ const Beers: React.FC = () => {
         <NavBar>
           <Link to="/">
             <FiChevronLeft size={20} />
-            Voltar
+            {t('back')}
           </Link>
 
           {navMenu.map(menu => (
             <NavButton key={menu.title} onClick={() => menu.func()}>
-              {menu.title}
+              {t(menu.title)}
             </NavButton>
           ))}
 
-          <Link to="/liked-beers">Meus Favoritos</Link>
+          <Link to="/liked-beers">{t('my_favorites')}</Link>
         </NavBar>
 
         <Arcicle>
