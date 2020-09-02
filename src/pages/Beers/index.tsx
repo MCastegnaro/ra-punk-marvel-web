@@ -138,10 +138,11 @@ const Beers: React.FC = () => {
     } catch (error) {
       addToast({
         type: 'error',
-        title: 'Erro ao buscar a cerveja',
+        title: t('error_find_beer'),
+        description: t('error_not_find_beer_desc'),
       });
     }
-  }, [addToast, findBeer]);
+  }, [addToast, findBeer, t]);
 
   const handleGiveLike = useCallback(
     async (beer: IBeer) => {
@@ -153,20 +154,22 @@ const Beers: React.FC = () => {
         likedBeers.splice(findIndexBeer, 1);
         addToast({
           type: 'info',
-          title: 'Item removido',
+          title: t('item_removed'),
+          description: t('item_removed_desc'),
         });
       } else {
         likedBeers.push(beer);
         addToast({
           type: 'success',
-          title: 'Item adicionado',
+          title: t('item_added'),
+          description: t('item_added_desc'),
         });
       }
 
       localStorage.setItem(TOKEN_BEERSLIKED, JSON.stringify(likedBeers));
     },
 
-    [addToast, likedBeers],
+    [addToast, likedBeers, t],
   );
 
   return (
