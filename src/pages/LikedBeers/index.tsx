@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Container } from './styles';
 import Arcicle from '../../components/shared/Arcicle';
 import Beer from '../../components/Beer';
-import BeerInfo from '../../components/BeerInfo';
+import BeerInfo from '../../components/Beer/BeerInfo';
 import Header from '../../components/shared/Header';
 import Section from '../../components/shared/Section';
 import NavBar from '../../components/shared/NavBar';

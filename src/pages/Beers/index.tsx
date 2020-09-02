@@ -11,12 +11,13 @@ import Input from '../../components/shared/Input';
 import NavButton from '../../components/shared/NavButton';
 import beersApi from '../../services/beersApi';
 import Beer from '../../components/Beer';
-import BeerInfo from '../../components/BeerInfo';
+import BeerInfo from '../../components/Beer/BeerInfo';
 import Header from '../../components/shared/Header';
 import Section from '../../components/shared/Section';
 import NavBar from '../../components/shared/NavBar';
 import Arcicle from '../../components/shared/Arcicle';
 import SearchButton from '../../components/shared/SearchButton';
+import { useToast } from '../../hooks/toast';
 
 interface IBeer {
   id: number;
@@ -39,8 +40,18 @@ const Beers: React.FC = () => {
   const [beers, setBeers] = useState<IBeer[]>([]);
   const [findBeer, setFindBeer] = useState('');
   const { t } = useTranslation();
+  const { addToast } = useToast();
+  const TOKEN_BEERSLIKED = '@RAchallenge:beersliked';
 
-  const likedBeers: IBeer[] = [];
+  const [likedBeers] = useState<IBeer[]>(() => {
+    const getLikedBeers = localStorage.getItem(TOKEN_BEERSLIKED);
+
+    if (getLikedBeers) {
+      return JSON.parse(getLikedBeers) as IBeer[];
+    }
+
+    return [] as IBeer[];
+  });
 
   const listAll = useCallback(async () => {
     await beersApi.get(`beers`).then(response => {
@@ -125,9 +136,13 @@ const Beers: React.FC = () => {
       setBeers(beer);
       setFindBeer('');
     } catch (error) {
-      console.log(error);
+      addToast({
+        type: 'error',
+        title: t('error_find_beer'),
+        description: t('error_not_find_beer_desc'),
+      });
     }
-  }, [findBeer]);
+  }, [addToast, findBeer, t]);
 
   const handleGiveLike = useCallback(
     async (beer: IBeer) => {
@@ -135,16 +150,26 @@ const Beers: React.FC = () => {
         indexBeer => indexBeer.id === beer.id,
       );
 
-      findIndexBeer >= 0
-        ? likedBeers.splice(findIndexBeer, 1)
-        : likedBeers.push(beer);
+      if (findIndexBeer >= 0) {
+        likedBeers.splice(findIndexBeer, 1);
+        addToast({
+          type: 'info',
+          title: t('item_removed'),
+          description: t('item_removed_desc'),
+        });
+      } else {
+        likedBeers.push(beer);
+        addToast({
+          type: 'success',
+          title: t('item_added'),
+          description: t('item_added_desc'),
+        });
+      }
 
-      localStorage.setItem(
-        '@RAchallenge:beersliked',
-        JSON.stringify(likedBeers),
-      );
+      localStorage.setItem(TOKEN_BEERSLIKED, JSON.stringify(likedBeers));
     },
-    [likedBeers],
+
+    [addToast, likedBeers, t],
   );
 
   return (
