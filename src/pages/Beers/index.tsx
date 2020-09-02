@@ -42,7 +42,16 @@ const Beers: React.FC = () => {
   const { t } = useTranslation();
   const { addToast } = useToast();
 
-  const likedBeers: IBeer[] = [];
+  const [likedBeers, setLikedBeers] = useState<IBeer[]>(() => {
+    const getLikedBeers = localStorage.getItem('@RAchallenge:beersliked');
+
+    if (getLikedBeers) {
+      console.log(getLikedBeers);
+      return JSON.parse(getLikedBeers) as IBeer[];
+    }
+
+    return [] as IBeer[];
+  });
 
   const listAll = useCallback(async () => {
     await beersApi.get(`beers`).then(response => {
@@ -141,17 +150,12 @@ const Beers: React.FC = () => {
         ? likedBeers.splice(findIndexBeer, 1)
         : likedBeers.push(beer);
 
-      addToast({
-        type: 'error',
-        title: 'Erro na autenticação',
-        description: 'Ocorreu um erro ao fazer login, cheque as credenciais',
-      });
-
       localStorage.setItem(
         '@RAchallenge:beersliked',
         JSON.stringify(likedBeers),
       );
     },
+
     [likedBeers],
   );
 
