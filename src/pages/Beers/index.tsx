@@ -41,12 +41,12 @@ const Beers: React.FC = () => {
   const [findBeer, setFindBeer] = useState('');
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const TOKEN_BEERSLIKED = '@RAchallenge:beersliked';
 
-  const [likedBeers, setLikedBeers] = useState<IBeer[]>(() => {
-    const getLikedBeers = localStorage.getItem('@RAchallenge:beersliked');
+  const [likedBeers] = useState<IBeer[]>(() => {
+    const getLikedBeers = localStorage.getItem(TOKEN_BEERSLIKED);
 
     if (getLikedBeers) {
-      console.log(getLikedBeers);
       return JSON.parse(getLikedBeers) as IBeer[];
     }
 
@@ -136,9 +136,12 @@ const Beers: React.FC = () => {
       setBeers(beer);
       setFindBeer('');
     } catch (error) {
-      console.log(error);
+      addToast({
+        type: 'error',
+        title: 'Erro ao buscar a cerveja',
+      });
     }
-  }, [findBeer]);
+  }, [addToast, findBeer]);
 
   const handleGiveLike = useCallback(
     async (beer: IBeer) => {
@@ -146,17 +149,24 @@ const Beers: React.FC = () => {
         indexBeer => indexBeer.id === beer.id,
       );
 
-      findIndexBeer >= 0
-        ? likedBeers.splice(findIndexBeer, 1)
-        : likedBeers.push(beer);
+      if (findIndexBeer >= 0) {
+        likedBeers.splice(findIndexBeer, 1);
+        addToast({
+          type: 'info',
+          title: 'Item removido',
+        });
+      } else {
+        likedBeers.push(beer);
+        addToast({
+          type: 'success',
+          title: 'Item adicionado',
+        });
+      }
 
-      localStorage.setItem(
-        '@RAchallenge:beersliked',
-        JSON.stringify(likedBeers),
-      );
+      localStorage.setItem(TOKEN_BEERSLIKED, JSON.stringify(likedBeers));
     },
 
-    [likedBeers],
+    [addToast, likedBeers],
   );
 
   return (
