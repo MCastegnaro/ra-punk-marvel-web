@@ -18,6 +18,8 @@ const messages = {
       bitterness: 'Amargura: ',
       error_find_beer: 'Erro ao buscar a cerveja',
       error_not_find_beer_desc: 'Não foi possível encontrar a cerveja.',
+      error_find_hero: 'Erro ao buscar o herói',
+      error_not_find_hero_desc: 'Não foi possível encontrar o herói.',
       item_removed: 'Item removido',
       item_removed_desc:
         'Item removido da lista de favoritos, cheque meus favoritos',
