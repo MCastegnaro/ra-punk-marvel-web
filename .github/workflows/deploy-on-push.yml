@@ -13,6 +13,9 @@ jobs:
         run: yarn
 
       - name: Build to deploy
+        env:
+          REACT_APP_MARVEL_PUBLIC_KEY: ${{ secrets.REACT_APP_MARVEL_PUBLIC_KEY }}
+          REACT_APP_MARVEL_PRIVATE_KEY: ${{ secrets.REACT_APP_MARVEL_PRIVATE_KEY }}
         run: yarn build
 
       # Deploy the site with netlify-cli
@@ -20,6 +23,4 @@ jobs:
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          REACT_APP_MARVEL_PUBLIC_KEY: ${{ secrets.REACT_APP_MARVEL_PUBLIC_KEY }}
-          REACT_APP_MARVEL_PRIVATE_KEY: ${{ secrets.REACT_APP_MARVEL_PRIVATE_KEY }}
         run: npx netlify-cli deploy --dir=build --prod
