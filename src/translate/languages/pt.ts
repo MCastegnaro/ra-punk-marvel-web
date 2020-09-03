@@ -13,6 +13,7 @@ const messages = {
       high_alcohol_content: 'Teor Alcoólico Alto',
       low_alcohol_content: 'Teor Alcoólico Baixo',
       favorite_beers: 'CERVEJAS FAVORITAS',
+      favorite_heroes: 'HERÓIS FAVORITOS',
       color: 'Cor: ',
       alcohol_content: 'Teor: ',
       bitterness: 'Amargura: ',
