@@ -27,7 +27,6 @@ const LikedBeers: React.FC<RouteChildrenProps> = () => {
     const beers = localStorage.getItem('@RAchallenge:beersliked');
 
     if (beers) {
-      console.log(JSON.parse(beers));
       return JSON.parse(beers);
     }
 

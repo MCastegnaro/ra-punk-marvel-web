@@ -8,7 +8,7 @@ import SearchButton from '../../components/shared/SearchButton';
 
 const Heroes: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const [heroes, setHeroes] = useState([]);
+  // const [heroes, setHeroes] = useState([]);
   const [findHero, setFindHero] = useState('');
 
   const handleSubmit = useCallback(async () => {
