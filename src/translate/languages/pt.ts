@@ -24,6 +24,12 @@ const messages = {
       item_added: 'Item adicionado',
       item_added_desc:
         'Item adicionado a lista de favoritos, cheque meus favoritos',
+      loading: 'Buscando informações...',
+      no_description: 'Sem descrição',
+      classics: 'Clássicos',
+      ultimante_xman: 'Ultimante X-MAN',
+      ultimante_spider_man: 'Ultimante Homem Aranha',
+      age_of_apocalypse: 'Era do Apocalipse',
     },
   },
 };
