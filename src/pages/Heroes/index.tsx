@@ -10,7 +10,7 @@ import Input from '../../components/shared/Input';
 import SearchButton from '../../components/shared/SearchButton';
 import { useToast } from '../../hooks/toast';
 
-import api, { listAll } from '../../services/marvel/api';
+import api, { listHeros, listByComics } from '../../services/marvel/api';
 import Section from '../../components/shared/Section';
 import NavBar from '../../components/shared/NavBar';
 import NavButton from '../../components/shared/NavButton';
@@ -52,7 +52,19 @@ const Heroes: React.FC = () => {
   // });
 
   const list = useCallback(async () => {
-    await listAll().then(res => setHeroes(res as ICharacter[]));
+    await listHeros().then(res => setHeroes(res as ICharacter[]));
+  }, []);
+
+  const ultimanteXMAN = useCallback(async () => {
+    await listByComics(1158).then(res => setHeroes(res as ICharacter[]));
+  }, []);
+
+  const spiderManUniverse = useCallback(async () => {
+    await listByComics(6181).then(res => setHeroes(res as ICharacter[]));
+  }, []);
+
+  const ageOfApoca = useCallback(async () => {
+    await listByComics(1886).then(res => setHeroes(res as ICharacter[]));
   }, []);
 
   useEffect(() => {
@@ -61,8 +73,22 @@ const Heroes: React.FC = () => {
 
   const navMenu: INavMenu[] = [
     {
-      title: 'list_all',
+      title: 'classics',
       func: list,
+    },
+    {
+      title: 'ultimante_xman',
+      func: ultimanteXMAN,
+    },
+
+    {
+      title: 'ultimante_spider_man',
+      func: spiderManUniverse,
+    },
+
+    {
+      title: 'age_of_apocalypse',
+      func: ageOfApoca,
     },
   ];
 

@@ -27,16 +27,23 @@ function getHashUrl(): string {
   return `ts=${timestamp}&apikey=${PUBLIC_KEY}&hash=${md5Hash.hex()}`;
 }
 
-export async function listAll(): Promise<ICharacter[]> {
+export async function listHeros(): Promise<ICharacter[]> {
   const hashUrl = getHashUrl();
-  const order = '-modified';
   const limit = 40;
+  const series = 16450;
 
   return api
-    .get(`characters?orderBy=${order}&limit=${limit}&${hashUrl}`)
+    .get(`characters?series=${series}&limit=${limit}&${hashUrl}`)
     .then(response => {
       return response.data.data.results;
     });
+}
+
+export async function listByComics(id: number): Promise<ICharacter[]> {
+  const hashUrl = getHashUrl();
+  return api.get(`characters?&comics=${id}&${hashUrl}`).then(response => {
+    return response.data.data.results;
+  });
 }
 
 export default api;
