@@ -24,6 +24,8 @@ const messages = {
       item_added: 'Item adicionado',
       item_added_desc:
         'Item adicionado a lista de favoritos, cheque meus favoritos',
+      loading: 'Buscando informações...',
+      no_description: 'Sem descrição',
     },
   },
 };
