@@ -202,6 +202,7 @@ const Beers: React.FC = () => {
         </NavBar>
 
         <Arcicle>
+          {beers.length > 0 ? '' : t('loading')}
           {beers.map(beer => (
             <Beer
               key={beer.id}
