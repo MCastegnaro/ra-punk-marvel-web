@@ -11,8 +11,8 @@ interface ICharacter {
   };
 }
 const URL_BASE = 'https://gateway.marvel.com/v1/public';
-const PUBLIC_KEY = 'a360c798f1e967103f1db0187292c228';
-const PRIVATE_KEY = 'eb3ce4e371a8fcb4b864e6132e80bdf22608460c';
+const PUBLIC_KEY = process.env.REACT_APP_MARVEL_PUBLIC_KEY;
+const PRIVATE_KEY = process.env.REACT_APP_MARVEL_PRIVATE_KEY;
 
 const api = axios.create({
   baseURL: URL_BASE,
@@ -22,7 +22,7 @@ function getHashUrl(): string {
   const md5Hash = md5.create();
   const timestamp = Number(new Date());
 
-  md5Hash.update(timestamp + PRIVATE_KEY + PUBLIC_KEY);
+  md5Hash.update(`${timestamp}${PRIVATE_KEY}${PUBLIC_KEY}`);
 
   return `ts=${timestamp}&apikey=${PUBLIC_KEY}&hash=${md5Hash.hex()}`;
 }
