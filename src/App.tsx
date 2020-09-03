@@ -6,7 +6,7 @@ import AppProvider from './hooks';
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter basename={window.location.pathname || ''}>
+    <BrowserRouter basename="/">
       <AppProvider>
         <Routes />
       </AppProvider>
