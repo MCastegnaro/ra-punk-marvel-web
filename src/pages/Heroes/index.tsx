@@ -10,7 +10,7 @@ import Input from '../../components/shared/Input';
 import SearchButton from '../../components/shared/SearchButton';
 import { useToast } from '../../hooks/toast';
 
-import api, { listHeros, listByComics } from '../../services/marvel/api';
+import { listHeros, listByComics, findByName } from '../../services/marvel/api';
 import Section from '../../components/shared/Section';
 import NavBar from '../../components/shared/NavBar';
 import NavButton from '../../components/shared/NavButton';
@@ -40,16 +40,15 @@ const Heroes: React.FC = () => {
 
   const [heroes, setHeroes] = useState<ICharacter[]>([]);
   const [findHero, setFindHero] = useState('');
+  const [likedHeroes] = useState<ICharacter[]>(() => {
+    const getlikedHeroes = localStorage.getItem(TOKEN_MARVEL_LIKED);
 
-  // const [likedBeers] = useState<IBeer[]>(() => {
-  //   const getLikedBeers = localStorage.getItem(TOKEN_BEERSLIKED);
+    if (getlikedHeroes) {
+      return JSON.parse(getlikedHeroes) as ICharacter[];
+    }
 
-  //   if (getLikedBeers) {
-  //     return JSON.parse(getLikedBeers) as IBeer[];
-  //   }
-
-  //   return [] as IBeer[];
-  // });
+    return [] as ICharacter[];
+  });
 
   const list = useCallback(async () => {
     await listHeros().then(res => setHeroes(res as ICharacter[]));
@@ -93,12 +92,45 @@ const Heroes: React.FC = () => {
   ];
 
   const handleSubmit = useCallback(async () => {
-    console.log(findHero);
-  }, [findHero]);
+    try {
+      await findByName(findHero).then(res => setHeroes(res as ICharacter[]));
+      setFindHero('');
+    } catch (error) {
+      addToast({
+        type: 'error',
+        title: t('error_find_hero'),
+        description: t('error_not_find_hero_desc'),
+      });
+    }
+  }, [addToast, findHero, t]);
 
-  const handleGiveLike = useCallback(async () => {
-    console.log(findHero);
-  }, [findHero]);
+  const handleGiveLike = useCallback(
+    async (hero: ICharacter) => {
+      const findIndexHero = likedHeroes.findIndex(
+        indexHero => indexHero.id === hero.id,
+      );
+
+      if (findIndexHero >= 0) {
+        likedHeroes.splice(findIndexHero, 1);
+        addToast({
+          type: 'info',
+          title: t('item_removed'),
+          description: t('item_removed_desc'),
+        });
+      } else {
+        likedHeroes.push(hero);
+        addToast({
+          type: 'success',
+          title: t('item_added'),
+          description: t('item_added_desc'),
+        });
+      }
+
+      localStorage.setItem(TOKEN_MARVEL_LIKED, JSON.stringify(likedHeroes));
+    },
+
+    [addToast, likedHeroes, t],
+  );
 
   return (
     <Container>
@@ -141,7 +173,7 @@ const Heroes: React.FC = () => {
               thumbnail={hero.thumbnail}
               description={hero.description}
             >
-              <button type="button" onClick={() => handleGiveLike()}>
+              <button type="button" onClick={() => handleGiveLike(hero)}>
                 <FiHeart size={20} />
               </button>
             </Hero>
