@@ -6,7 +6,7 @@ import AppProvider from './hooks';
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter basename="/">
+    <BrowserRouter basename="/ra-punk-marvel-web">
       <AppProvider>
         <Routes />
       </AppProvider>
