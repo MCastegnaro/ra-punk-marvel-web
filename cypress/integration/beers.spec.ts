@@ -115,4 +115,45 @@ describe('Beers Page ', () => {
     cy.get('.sc-fzqNJr > button').click();
     cy.get('.gmnvuv > div > strong').should('contain.text', 'Item removido');
   });
+
+  it('should be able to list liked beers', () => {
+    cy.get('.sc-fznyAO > :nth-child(2)').click();
+    cy.get(':nth-child(1) > strong').should('contain.text', 'Buzz');
+    cy.get('.sc-fznZeY > :nth-child(1) > :nth-child(3)').should(
+      'contain.text',
+      'A Real Bitter Experience.',
+    );
+
+    cy.get(':nth-child(1) > button > svg').click();
+    cy.get('.sc-fzoLsD > div > strong').should(
+      'contain.text',
+      'Item adicionado',
+    );
+
+    cy.get('[href="/liked-beers"]').click();
+    cy.get('.sc-AxheI').should('contain.text', 'CERVEJAS FAVORITAS');
+    cy.get('strong').should('contain.text', 'Buzz');
+  });
+
+  it('should be able to list liked beers and back to home list', () => {
+    cy.get('.sc-fznyAO > :nth-child(2)').click();
+    cy.get(':nth-child(1) > strong').should('contain.text', 'Buzz');
+    cy.get('.sc-fznZeY > :nth-child(1) > :nth-child(3)').should(
+      'contain.text',
+      'A Real Bitter Experience.',
+    );
+
+    cy.get(':nth-child(1) > button > svg').click();
+    cy.get('.sc-fzoLsD > div > strong').should(
+      'contain.text',
+      'Item adicionado',
+    );
+
+    cy.get('[href="/liked-beers"]').click();
+    cy.get('.sc-AxheI').should('contain.text', 'CERVEJAS FAVORITAS');
+    cy.get('strong').should('contain.text', 'Buzz');
+
+    cy.get('a').should('contain.text', 'Voltar').click();
+    cy.get('.sc-AxheI').should('contain.text', 'PUNK API');
+  });
 });
