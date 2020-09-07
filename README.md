@@ -1,17 +1,31 @@
-# Template React Starter
-> A simple React template to start development your web application
+# RA-punk-marvel-web
+> A simple react project to use the punk and marvel api's.
 
-This is a simple template to start develpment a React app. The template already contains some libs and frameworks to help de developer with your job,  like:
+This project use the marvel and punk api's to discover the interest of people on that subjects.
+Here you can  list, find and like the favorites heros and beers.
 
-- EditorConfig
-- EsLint-airbnb
-- Prettier
-- Typescript
+## Setup Installation
 
-## Installation
-
-Clone this repo and install yarn in you PC.
+1. Clone this repo;
+2. Install yarn in you PC.
 
 ## Development setup
 
-1. To install all dev dependencies, run ``` yarn ``` in package.json directory.
+1. To install all dev dependencies, run ``` yarn ``` in package.json directory;
+2. To exec the project in localhost, run the script ``` yarn start ```;
+3. To build project, run ``` yarn build ```;
+
+## Test setup
+1. To perform the tests correctly make sure that ```cypress``` is installed on your PC;
+2. To open and see the tests running, run ```yarn cypress:open ```;
+3. To running tests in background , run ```yarn cypress:run ```.
+
+## Live
+You can access the project running [Here](https://ra-marvel-punk-web.netlify.app)
+
+## Deploy
+
+The project was deployed in Netlify with github action.
+
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/abc27a7e-f2e6-439b-aa83-9045e7fa6422/deploy-status)](https://app.netlify.com/sites/ra-marvel-punk-web/deploys)
