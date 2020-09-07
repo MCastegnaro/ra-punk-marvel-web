@@ -12,8 +12,12 @@ Here you can  list, find and like the favorites heros and beers.
 ## Development setup
 
 1. To install all dev dependencies, run ``` yarn ``` in package.json directory;
-2. To exec the project in localhost, run the script ``` yarn start ```;
-3. To build project, run ``` yarn build ```;
+2. To use marvel api with no problems, make sure to create a '.env' file at the project root containing the variables ```REACT_APP_MARVEL_PUBLIC_KEY``` and ```REACT_APP_MARVEL_PRIVATE_KEY```
+containing the key values ​​for your marvel account.
+3. To exec the project in localhost, run the script ``` yarn start ```;
+
+## Build
+1. To build project, run ``` yarn build ```;
 
 ## Test setup
 1. To perform the tests correctly make sure that ```cypress``` is installed on your PC;
