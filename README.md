@@ -4,6 +4,8 @@
 This project use the marvel and punk api's to discover the interest of people on that subjects.
 Here you can  list, find and like the favorites heros and beers.
 
+<img src="./.github/capa.png" alt="home do projeto">
+
 ## Setup Installation
 
 1. Clone this repo;
